@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import NextImage from 'next/image';
 
 const imgWithClick = { cursor: 'pointer' };
 
@@ -16,12 +17,14 @@ const Photo = ({ index, onClick, photo, margin, direction, top, left, key }) => 
   };
 
   return (
-    <img
-      key={key}
-      style={onClick ? { ...imgStyle, ...imgWithClick } : imgStyle}
-      {...photo}
-      onClick={onClick ? handleClick : null}
-    />
+    <div style={onClick ? { ...imgStyle, ...imgWithClick, fontSize: 0 } : { imgStyle, fontSize: 0 }}>
+      <NextImage
+        key={key}
+        {...photo}
+        layout="intrinsic"
+        onClick={onClick ? handleClick : null}
+      />
+    </div>
   );
 };
 
