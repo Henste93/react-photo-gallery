@@ -19,13 +19,19 @@ const Gallery = React.memo(function Gallery({
   renderImage,
 }) {
   const [containerWidth, setContainerWidth] = useState(0);
+  const [scrollbarWidth, setScrollbarWidth] = useState(0);
   const galleryEl = useRef(null);
 
   useIsomorphicLayoutEffect(() => {
     let animationFrameID = null;
     const observer = new ResizeObserver(entries => {
+      const newScrollbarWidth = window.innerWidth - document.body.clientWidth;
+      if (newScrollbarWidth > 0) {
+        setScrollbarWidth(newScrollbarWidth);
+      }
+
       // only do something if width changes
-      const newWidth = entries[0].contentRect.width;
+      const newWidth = entries[0].contentRect.width - (newScrollbarWidth === 0 ? scrollbarWidth : 0);
       if (containerWidth !== newWidth) {
         // put in an animation frame to stop "benign errors" from
         // ResizObserver https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
@@ -35,6 +41,7 @@ const Gallery = React.memo(function Gallery({
       }
     });
     observer.observe(galleryEl.current);
+
     return () => {
       observer.disconnect();
       window.cancelAnimationFrame(animationFrameID);
